@@ -9,10 +9,9 @@ phases:
   build:
     commands:
       - echo "Packaging application for Elastic Beanstalk"
-      - mkdir output
-      - zip -r app.zip . -x "**/*.terraform*" -x "**/*.tfstate*" -x "*.git*"
+      - zip -r app.zip app.js package.json public .ebextensions -x "terraform/*" -x "diagram/*" -x "*.git*" -x "app.zip"
 
 artifacts:
   files:
     - app.zip
-  discard-paths: no
+  discard-paths: yes
