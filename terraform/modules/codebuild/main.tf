@@ -7,16 +7,9 @@ resource "aws_codebuild_project" "codebuild" {
     type = "CODEPIPELINE"
   }
 
-  source {
-    type            = "GITHUB"
-    location        = "https://github.com/Umarsatti1/Task-11-Nodejs-App-on-AWS-ElasticBeanstalk-CodePipeline-using-Terraform.git"
-    git_clone_depth = 1
-    buildspec       = "buildspec.yml"
-  }
-
   environment {
     compute_type                = "BUILD_GENERAL1_SMALL"
-    image                       = "aws/codebuild/ami/amazonlinux-x86_64-base:latest"
+    image                       = "aws/codebuild/amazonlinux-x86_64-standard:5.0"
     type                        = "LINUX_CONTAINER"
     privileged_mode             = true
     image_pull_credentials_type = "CODEBUILD"
@@ -40,11 +33,9 @@ resource "aws_codebuild_project" "codebuild" {
     }
   }
 
-  /*
   source {
     type = "CODEPIPELINE"
   }
-  */
 
   vpc_config {
     vpc_id             = var.vpc_id

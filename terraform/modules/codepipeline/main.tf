@@ -45,7 +45,6 @@ resource "aws_codepipeline" "pipeline" {
         BranchName           = "main"
         OutputArtifactFormat = "CODEBUILD_CLONE_REF"
         DetectChanges        = "true"
-        PollForSourceChanges = "false"
       }
     }
   }
@@ -85,8 +84,6 @@ resource "aws_codepipeline" "pipeline" {
       configuration = {
         ApplicationName = var.eb_application_name
         EnvironmentName = var.eb_environment_name
-        DeploymentPolicy = "AllAtOnce"
-        RollbackEnabled  = "true"
       }
     }
   }

@@ -131,7 +131,7 @@ resource "aws_iam_role" "codepipeline_service_role" {
 
 # Create the IAM Policy
 resource "aws_iam_policy" "codepipeline_service_policy" {
-  name        = var.codebuild_policy
+  name        = var.codepipeline_policy
   description = "Permissions for CodePipeline Service Role (read from JSON file)"
   policy      = file("${path.root}/codepipeline-permissions.json")
 }
