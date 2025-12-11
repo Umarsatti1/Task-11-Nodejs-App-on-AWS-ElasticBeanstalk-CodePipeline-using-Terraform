@@ -6,12 +6,11 @@ phases:
       nodejs: 20.19.3
     commands:
       - npm install
-  build:
-    commands:
-      - echo "Packaging application for Elastic Beanstalk"
-      - zip -r app.zip app.js package.json public .ebextensions -x "terraform/*" -x "diagram/*" -x "*.git*" -x "app.zip"
 
 artifacts:
   files:
-    - app.zip
+    - app.js
+    - package.json
+    - public/**
+    - .ebextensions/**
   discard-paths: no
