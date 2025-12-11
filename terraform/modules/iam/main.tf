@@ -143,7 +143,7 @@ resource "aws_iam_role_policy_attachment" "codepipeline_service_policy_attachmen
 }
 
 # Attach AWS Managed IAM Policy to the IAM Role
-resource "aws_iam_role_policy_attachment" "codepipeline_service_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "codepipeline_managed_policy_attachment" {
   role       = aws_iam_role.codepipeline_service_role.name
   policy_arn = "arn:aws:iam::aws:policy/AdministratorAccess-AWSElasticBeanstalk"
 }
