@@ -5,12 +5,17 @@
             "Effect": "Allow",
             "Action": [
                 "ec2:CreateNetworkInterface",
-                "ec2:DescribeDhcpOptions",
                 "ec2:DescribeNetworkInterfaces",
                 "ec2:DeleteNetworkInterface",
                 "ec2:DescribeSubnets",
                 "ec2:DescribeSecurityGroups",
-                "ec2:DescribeVpcs"
+                "ec2:DescribeVpcs",
+                "ec2:DescribeDhcpOptions",
+                "ec2:AssignPrivateIpAddresses",
+                "ec2:UnassignPrivateIpAddresses",
+                "ec2:AttachNetworkInterface",
+                "ec2:DetachNetworkInterface",
+                "ec2:CreateNetworkInterfacePermission"
             ],
             "Resource": "*"
         },
@@ -64,22 +69,6 @@
                 "arn:aws:codestar-connections:us-west-1:504649076991:connection/26450667-fd5d-4d75-b056-35a6857547a6",
                 "arn:aws:codeconnections:us-west-1:504649076991:connection/26450667-fd5d-4d75-b056-35a6857547a6"
             ]
-        },
-        {
-            "Effect": "Allow",
-            "Action": [
-                "ec2:CreateNetworkInterfacePermission"
-            ],
-            "Resource": "arn:aws:ec2:us-west-1:504649076991:network-interface/*",
-            "Condition": {
-                "StringEquals": {
-                    "ec2:Subnet": [
-                        "arn:aws:ec2:us-west-1:504649076991:subnet/subnet-*",
-                        "arn:aws:ec2:us-west-1:504649076991:subnet/subnet-*"
-                    ],
-                    "ec2:AuthorizedService": "codebuild.amazonaws.com"
-                }
-            }
         }
     ]
 }
