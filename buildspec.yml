@@ -1,0 +1,18 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 20.19.3
+    commands:
+      - npm install
+  build:
+    commands:
+      - echo "Packaging application for Elastic Beanstalk"
+      - mkdir output
+      - zip -r output/app.zip . -x "**/*.terraform*" -x "**/*.tfstate*" -x "*.git*"
+
+artifacts:
+  files:
+    - output/app.zip
+  discard-paths: no

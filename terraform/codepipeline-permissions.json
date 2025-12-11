@@ -1,0 +1,105 @@
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "AllowS3BucketAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:GetBucketVersioning",
+                "s3:GetBucketAcl",
+                "s3:GetBucketLocation"
+            ],
+            "Resource": "arn:aws:s3:::codepipeline-us-west-1*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceAccount": "504649076991"
+                }
+            }
+        },
+        {
+            "Sid": "AllowS3ObjectAccess",
+            "Effect": "Allow",
+            "Action": [
+                "s3:PutObject",
+                "s3:PutObjectAcl",
+                "s3:GetObject",
+                "s3:GetObjectVersion"
+            ],
+            "Resource": "arn:aws:s3:::codepipeline-us-west-1*/*",
+            "Condition": {
+                "StringEquals": {
+                    "aws:ResourceAccount": "504649076991"
+                }
+            }
+        },
+        {   
+            "Sid": "CodestarConnections",
+            "Effect": "Allow",
+            "Action": [
+                "codestar-connections:UseConnection",
+                "codeconnections:UseConnection"
+            ],
+            "Resource": [
+                "arn:aws:codestar-connections:us-west-2:504649076991:connection/26450667-fd5d-4d75-b056-35a6857547a6",
+                "arn:aws:codeconnections:us-west-1:504649076991:connection/26450667-fd5d-4d75-b056-35a6857547a6"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "logs:CreateLogGroup",
+                "logs:CreateLogStream",
+                "logs:PutLogEvents"
+            ],
+            "Resource": [
+                "arn:aws:logs:us-west-1:504649076991:log-group:/aws/codepipeline/CodePipeline-EB-Nodejs",
+                "arn:aws:logs:us-west-1:504649076991:log-group:/aws/codepipeline/CodePipeline-EB-Nodejs:log-stream:*"
+            ]
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateNetworkInterface",
+                "ec2:DescribeDhcpOptions",
+                "ec2:DescribeNetworkInterfaces",
+                "ec2:DeleteNetworkInterface",
+                "ec2:DescribeSubnets",
+                "ec2:DescribeSecurityGroups",
+                "ec2:DescribeVpcs"
+            ],
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": [
+                "ec2:CreateNetworkInterfacePermission"
+            ],
+            "Resource": "arn:aws:ec2:us-west-1:504649076991:network-interface/*",
+            "Condition": {
+                "StringEquals": {
+                    "ec2:Subnet": [
+                        "arn:aws:ec2:us-west-1:504649076991:subnet/subnet-*",
+                        "arn:aws:ec2:us-west-1:504649076991:subnet/subnet-*"
+                    ],
+                    "ec2:AuthorizedService": "codebuild.amazonaws.com"
+                }
+            }
+        },
+        {
+            "Action": [
+                "elasticbeanstalk:CreateApplicationVersion"
+            ],
+            "Effect": "Allow",
+            "Resource": [
+                "arn:aws:elasticbeanstalk:us-west-1:504649076991:applicationversion/umarsatti-nodejs-application/*"
+            ],
+            "Condition": {
+                "StringEquals": {
+                    "elasticbeanstalk:InApplication": [
+                        "arn:aws:elasticbeanstalk:us-west-1:504649076991:application/umarsatti-nodejs-application"
+                    ]
+                }
+            }
+        }
+    ]
+}
