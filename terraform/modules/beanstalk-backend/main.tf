@@ -3,29 +3,33 @@ resource "aws_s3_bucket" "beanstalk_bucket" {
   force_destroy = true
 }
 
+/*
 resource "aws_s3_object" "app_zip" { 
   bucket = aws_s3_bucket.beanstalk_bucket.bucket 
   key = "beanstalk/app.zip" 
   source = "${path.root}/../app.zip" 
 }
+*/
 
 resource "aws_elastic_beanstalk_application" "eb_application" {
   name        = var.application_name
   description = "Elastic Beanstalk Nodejs application name"
 }
 
+/*
 resource "aws_elastic_beanstalk_application_version" "app_version" {
   name        = "v1"
   application = aws_elastic_beanstalk_application.eb_application.name
   bucket      = aws_s3_bucket.beanstalk_bucket.bucket
   key         = aws_s3_object.app_zip.key
 }
+*/
 
 resource "aws_elastic_beanstalk_environment" "eb_environment" {
   name                = var.environment_name
   application         = aws_elastic_beanstalk_application.eb_application.name
   solution_stack_name = var.platform
-  version_label       = aws_elastic_beanstalk_application_version.app_version.name
+  #version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
 # Step 2: Configure service access
   setting {
