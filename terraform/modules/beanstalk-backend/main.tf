@@ -288,6 +288,32 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   name      = "USE_LOCALHOST"
   value     = "false"
   }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "RDS_HOSTNAME"
+    value     = trim(element(split(":", element(aws_elastic_beanstalk_environment.eb_environment.cname, 0)), 0), "/")
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "RDS_PORT"
+    value     = "3306"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "RDS_USERNAME"
+    value     = "umarsatti"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "RDS_PASSWORD"
+    value     = "P@ssw0rd"
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "RDS_DB_NAME"
+    value     = "beanstalkdb"
+  }
 }
 
 # Testing Custom Metrics for CloudWatch Agent
