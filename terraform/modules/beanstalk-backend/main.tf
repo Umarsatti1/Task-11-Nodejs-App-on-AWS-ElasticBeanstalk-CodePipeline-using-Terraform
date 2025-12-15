@@ -156,7 +156,7 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   setting {
     namespace = "aws:elasticbeanstalk:environment"
     name      = "EnvironmentType"
-    value     = "LoadBalanced"
+    value     = "SingleInstance"
   }
 
   setting {
@@ -168,7 +168,7 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
-    value     = "3"
+    value     = "2"
   }
 
   setting {
@@ -224,30 +224,6 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     name      = "LowerThreshold"
     value     = "30"
   }
-
-  # Part 3: Load Balancer network settings
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "ELBSubnets"
-    value     = join(",", var.public_subnets)
-  }
-
-  # Part 4: Load Balancer type
-  setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "LoadBalancerType"
-    value     = "application"
-  }
-
-  # Part 5: Listener
-  setting {
-    namespace = "aws:elbv2:listener:default"
-    name      = "ListenerEnabled"
-    value     = true
-  }
-
-  # Part 6: Process (none)
-  # Part 7: S3 Logs (none)
 
 # Step 5: Configure updates, monitoring, and logging
   setting {

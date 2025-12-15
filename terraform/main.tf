@@ -49,7 +49,7 @@ module "beanstalk-frontend" {
     frontend_environment_name = var.frontend_environment_name
     frontend_platform         = var.frontend_platform
     backend_api_url           = module.beanstalk-backend.backend_api_url
-    depends_on                = [module.beanstalk-backend.eb_environment]
+    depends_on                = [module.beanstalk-backend]
 }
 
 module "codebuild" {

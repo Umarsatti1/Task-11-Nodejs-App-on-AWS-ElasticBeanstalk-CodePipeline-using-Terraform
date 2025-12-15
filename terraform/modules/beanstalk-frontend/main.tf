@@ -33,6 +33,12 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   }
 
   setting {
+    namespace = "aws:elbv2:listener:default"
+    name      = "ListenerEnabled"
+    value     = true
+  }
+
+  setting {
     namespace = "aws:ec2:vpc"
     name      = "VPCId"
     value     = var.vpc_id
@@ -62,6 +68,4 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     name      = "REACT_APP_API_URL"
     value     = var.backend_api_url
   }
-
-  depends_on = [ module.beanstalk-backend.eb_environment ]
 }

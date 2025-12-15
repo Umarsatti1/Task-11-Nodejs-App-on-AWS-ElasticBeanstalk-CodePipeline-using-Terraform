@@ -4,7 +4,7 @@ output "vpc_id" {
 }
 
 output "Application_URL" {
-    value       = module.beanstalk.environment_url
+    value       = module.beanstalk-backend.environment_url
     description = "This is the Elastic Beanstalk application URL"
 }
 
