@@ -291,11 +291,6 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RDS_HOSTNAME"
-    value     = trim(element(split(":", element(aws_elastic_beanstalk_environment.eb_environment.cname, 0)), 0), "/")
-  }
-  setting {
-    namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RDS_PORT"
     value     = "3306"
   }
