@@ -6,20 +6,22 @@ phases:
       nodejs: 20.19.3
     commands:
       - echo Installing backend dependencies...
-      - npm install --prefix server
+      - npm install --prefix E-Commerce-react-node-mysql/server
       - echo Installing frontend dependencies...
-      - npm install --prefix client
+      - npm install --prefix E-Commerce-react-node-mysql/client
   build:
     commands:
       - echo Building React frontend...
-      - npm run build --prefix client
+      - npm run build --prefix E-Commerce-react-node-mysql/client
       - echo Copying React build to server...
-      - rm -rf server/build
-      - cp -r client/build server/build
+      - rm -rf E-Commerce-react-node-mysql/server/build
+      - cp -r E-Commerce-react-node-mysql/client/build E-Commerce-react-node-mysql/server/build
   post_build:
     commands:
       - echo Zipping server for EB deployment...
-      - zip -r app.zip server/*
+      - cd E-Commerce-react-node-mysql/server
+      - zip -r ../../app.zip ./*
+      - cd ../..
 
 artifacts:
   files:
