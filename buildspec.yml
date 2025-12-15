@@ -3,36 +3,34 @@ version: 0.2
 phases:
   install:
     runtime-versions:
-      nodejs: 20
+      nodejs: 20.19.3
     commands:
-      - echo "Installing backend dependencies"
-      - cd E-Commerce-react-node-mysql/server
+      - echo Installing root dependencies...
+      - cd server
       - npm install
-
-      - echo "Installing frontend dependencies"
-      - cd ../client
+      - cd ..
+  pre_build:
+    commands:
+      - echo Installing frontend dependencies...
+      - cd client
       - npm install
-
+      - cd ..
   build:
     commands:
-      - echo "Preparing backend artifact"
-      - cd $CODEBUILD_SRC_DIR/E-Commerce-react-node-mysql/server
-      - mkdir -p /tmp/backend
-      - rsync -av . /tmp/backend/
-
-      - echo "Building frontend"
-      - cd ../client
+      - echo Building React frontend...
+      - cd client
       - npm run build
-      - mkdir -p /tmp/frontend
-      - rsync -av build/ /tmp/frontend/
+      - cd ..
+      - echo Copying React build to server...
+      - rm -rf server/build
+      - cp -r client/build server/build
+  post_build:
+    commands:
+      - echo Zipping server for EB deployment...
+      - cd server
+      - zip -r ../app.zip ./*
+      - cd ..
 
 artifacts:
-  base-directory: /tmp/backend
   files:
-    - "**/*"
-
-secondary-artifacts:
-  frontend:
-    base-directory: /tmp/frontend
-    files:
-      - "**/*"
+    - app.zip

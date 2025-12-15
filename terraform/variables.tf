@@ -85,19 +85,6 @@ variable "alert_email" {
     type = string
 }
 
-# Elastic Beanstalk Frontend Variables
-variable "frontend_application_name" {
-    type = string
-}
-
-variable "frontend_environment_name" {
-    type = string
-}
-
-variable "frontend_platform" {
-    type = string
-}
-
 # CodeBuild Variables
 variable "codebuild_project_name" {
     type = string

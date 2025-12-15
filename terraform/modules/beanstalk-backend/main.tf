@@ -3,33 +3,29 @@ resource "aws_s3_bucket" "beanstalk_bucket" {
   force_destroy = true
 }
 
-/*
 resource "aws_s3_object" "app_zip" { 
   bucket = aws_s3_bucket.beanstalk_bucket.bucket 
   key = "beanstalk/app.zip" 
   source = "${path.root}/../app.zip" 
 }
-*/
 
 resource "aws_elastic_beanstalk_application" "eb_application" {
   name        = var.application_name
   description = "Elastic Beanstalk Nodejs application name"
 }
 
-/*
 resource "aws_elastic_beanstalk_application_version" "app_version" {
   name        = "v1"
   application = aws_elastic_beanstalk_application.eb_application.name
   bucket      = aws_s3_bucket.beanstalk_bucket.bucket
   key         = aws_s3_object.app_zip.key
 }
-*/
 
 resource "aws_elastic_beanstalk_environment" "eb_environment" {
   name                = var.environment_name
   application         = aws_elastic_beanstalk_application.eb_application.name
   solution_stack_name = var.platform
-  #version_label       = aws_elastic_beanstalk_application_version.app_version.name
+  version_label       = aws_elastic_beanstalk_application_version.app_version.name
 
 # Step 2: Configure service access
   setting {
@@ -62,6 +58,12 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     namespace = "aws:ec2:vpc"
     name      = "Subnets"
     value     = join(",", var.private_subnets)
+  }
+
+  setting {
+    namespace = "aws:ec2:vpc"
+    name      = "ELBSubnets"
+    value     = join(",", var.public_subnets)
   }
 
   # Database
@@ -119,6 +121,25 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     value     = "Delete"
   }
 
+  # Load Balancer
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "EnvironmentType"
+    value     = "LoadBalanced"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:environment"
+    name      = "LoadBalancerType"
+    value     = "application"
+  }
+
+  setting {
+    namespace = "aws:elbv2:listener:default"
+    name      = "ListenerEnabled"
+    value     = true
+  }
+
 # Step 4: Configure instance traffic and scaling
 
   # Part 1: Instances
@@ -154,12 +175,6 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
 
   # Part 2: Capacity
   setting {
-    namespace = "aws:elasticbeanstalk:environment"
-    name      = "EnvironmentType"
-    value     = "SingleInstance"
-  }
-
-  setting {
     namespace = "aws:autoscaling:asg"
     name      = "MinSize"
     value     = "1"
@@ -168,7 +183,7 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   setting {
     namespace = "aws:autoscaling:asg"
     name      = "MaxSize"
-    value     = "2"
+    value     = "3"
   }
 
   setting {

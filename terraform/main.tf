@@ -39,19 +39,6 @@ module "beanstalk-backend" {
     alert_email          = var.alert_email
 }
 
-module "beanstalk-frontend" {
-    source                    = "./modules/beanstalk-frontend"
-    vpc_id                    = module.vpc.vpc_id
-    public_subnets            = module.vpc.public_subnets
-    eb_service_role           = module.iam.eb_service_role
-    ec2_instance_profile      = module.iam.ec2_instance_profile
-    frontend_application_name = var.frontend_application_name
-    frontend_environment_name = var.frontend_environment_name
-    frontend_platform         = var.frontend_platform
-    backend_api_url           = module.beanstalk-backend.backend_api_url
-    depends_on                = [module.beanstalk-backend]
-}
-
 module "codebuild" {
     source                 = "./modules/codebuild"
     vpc_id                 = module.vpc.vpc_id
