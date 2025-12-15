@@ -8,37 +8,31 @@ phases:
       - echo "Installing backend dependencies"
       - cd E-Commerce-react-node-mysql/server
       - npm install
+
       - echo "Installing frontend dependencies"
       - cd ../client
       - npm install
 
   build:
     commands:
-      - echo "Resetting to repo root"
-      - cd $CODEBUILD_SRC_DIR
-
       - echo "Preparing backend artifact"
-      - mkdir -p backend
-      - cp -r E-Commerce-react-node-mysql/server/* backend/
+      - cd $CODEBUILD_SRC_DIR/E-Commerce-react-node-mysql/server
+      - mkdir -p /tmp/backend
+      - rsync -av . /tmp/backend/
 
       - echo "Building frontend"
-      - cd E-Commerce-react-node-mysql/client
+      - cd ../client
       - npm run build
-
-      - echo "Preparing frontend artifact"
-      - cd $CODEBUILD_SRC_DIR
-      - mkdir -p frontend
-      - cp -r E-Commerce-react-node-mysql/client/build/* frontend/
+      - mkdir -p /tmp/frontend
+      - rsync -av build/ /tmp/frontend/
 
 artifacts:
+  base-directory: /tmp/backend
   files:
-    - buildspec.yml   # dummy primary artifact (required)
-  secondary-artifacts:
-    backend:
-      base-directory: backend
-      files:
-        - "**/*"
-    frontend:
-      base-directory: frontend
-      files:
-        - "**/*"
+    - "**/*"
+
+secondary-artifacts:
+  frontend:
+    base-directory: /tmp/frontend
+    files:
+      - "**/*"
