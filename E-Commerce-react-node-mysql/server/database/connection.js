@@ -16,6 +16,9 @@ if (useLocalhost) {
         database: "e_commerce",
     };
 } else {
+
+    console.log(`Attempting connection to Host: ${process.env.RDS_HOSTNAME}, User: ${process.env.RDS_USERNAME}`);
+
     connectionParams = {
         host: process.env.RDS_HOSTNAME,
         user: process.env.RDS_USERNAME,
@@ -23,8 +26,6 @@ if (useLocalhost) {
         database: process.env.RDS_DB_NAME,
     };
 }
-
-
 
 const pool = mysql2.createConnection(connectionParams);
 
