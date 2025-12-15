@@ -14,15 +14,18 @@ phases:
       - echo Building React frontend...
       - npm run build --prefix E-Commerce-react-node-mysql/client
       - echo Copying React build to server...
+      # Remove existing build folder to ensure a clean copy
       - rm -rf E-Commerce-react-node-mysql/server/build
+      # Copy the new React build into the server's public assets folder
       - cp -r E-Commerce-react-node-mysql/client/build E-Commerce-react-node-mysql/server/build
-  post_build:
-    commands:
-      - echo Zipping server for EB deployment...
-      - cd E-Commerce-react-node-mysql/server
-      - zip -r ../../app.zip ./*
-      - cd ../..
-
+  # Remove the post_build phase entirely
+  
 artifacts:
+  # The deployment artifact will contain all files from this directory
+  base-directory: 'E-Commerce-react-node-mysql/server' 
   files:
-    - app.zip
+    # **/* means all files and folders *within* the base-directory
+    - '**/*' 
+  # This results in a ZIP file where the contents of 'server' are at the root.
+
+#
