@@ -24,6 +24,7 @@ phases:
       - cp -r build/* ../../build/frontend/
 
 artifacts:
+  base-directory: build
   files:
-    - build/** # Includes backend and frontend folders
+    - "**/*"
   discard-paths: no
