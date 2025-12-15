@@ -58,8 +58,6 @@ module "codepipeline" {
     codepipeline_service_role = module.iam.codepipeline_service_role
     backend_application_name  = module.beanstalk-backend.eb_application_name
     backend_environment_name  = module.beanstalk-backend.eb_environment_name
-    frontend_application_name = module.beanstalk-frontend.eb_application_name
-    frontend_environment_name = module.beanstalk-frontend.eb_environment_name
     pipeline_bucket_name      = var.pipeline_bucket_name
     github_connection_arn     = var.github_connection_arn
     pipeline_name             = var.pipeline_name

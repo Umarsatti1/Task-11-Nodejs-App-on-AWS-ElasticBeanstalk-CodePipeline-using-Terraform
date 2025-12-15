@@ -33,7 +33,7 @@ region                 = "us-west-1"
 codebuild_logs         = "CodeBuild-EB-Nodejs"
 
 # CodePipeline Variables
-pipeline_bucket_name = "codepipeline-us-west-1-umarsatti"
+pipeline_bucket_name  = "codepipeline-us-west-1-umarsatti"
 github_connection_arn = "arn:aws:codeconnections:us-west-1:504649076991:connection/26450667-fd5d-4d75-b056-35a6857547a6"
-pipeline_name        = "CodePipeline-EB-Nodejs"
-github_repo          = "Umarsatti1/Task-11-Nodejs-App-on-AWS-ElasticBeanstalk-CodePipeline-using-Terraform"
+pipeline_name         = "CodePipeline-EB-Nodejs"
+github_repo           = "Umarsatti1/Task-11-Nodejs-App-on-AWS-ElasticBeanstalk-CodePipeline-using-Terraform"

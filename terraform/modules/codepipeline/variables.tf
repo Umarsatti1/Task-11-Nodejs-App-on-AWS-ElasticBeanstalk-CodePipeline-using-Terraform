@@ -19,14 +19,6 @@ variable "backend_environment_name" {
     type = string
 }
 
-variable "frontend_application_name" {
-    type = string
-}
-
-variable "frontend_environment_name" {
-    type = string
-}
-
 # CodePipeline Variables
 variable "pipeline_bucket_name" {
     type = string
