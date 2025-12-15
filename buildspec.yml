@@ -5,12 +5,25 @@ phases:
     runtime-versions:
       nodejs: 20.19.3
     commands:
+      - echo "Installing backend dependencies"
+      - cd E-Commerce-react-node-mysql/server
       - npm install
+      - cd ../client
+      - echo "Installing frontend dependencies"
+      - npm install
+  build:
+    commands:
+      - echo "Packaging backend"
+      - cd ../../E-Commerce-react-node-mysql/server
+      - mkdir -p ../../build/backend
+      - cp -r * ../../build/backend/
+      - echo "Building frontend"
+      - cd ../client
+      - npm run build
+      - mkdir -p ../../build/frontend
+      - cp -r build/* ../../build/frontend/
 
 artifacts:
   files:
-    - app.js
-    - package.json
-    - public/**
-    - .ebextensions/**
+    - build/** # Includes backend and frontend folders
   discard-paths: no

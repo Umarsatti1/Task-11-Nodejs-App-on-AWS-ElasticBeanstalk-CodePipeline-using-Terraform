@@ -16,7 +16,7 @@ codepipeline_service_role = "CodePipeline-EB-ServiceRole"
 codepipeline_policy       = "CodePipeline-EB-Permissions-Policy"
 
 
-# Elastic Beanstalk Variables
+# Elastic Beanstalk Backend Variables
 bucket_name         = "umarsatti-elastic-beanstalk-app-bucket"
 application_name    = "umarsatti-nodejs-application"
 environment_name    = "umarsatti-nodejs-environment"
@@ -25,6 +25,11 @@ volume_type         = "gp3"
 volume_size         = 10
 monitoring_interval = "1 minute"
 alert_email         = "umarsatti.15@gmail.com"
+
+# Elastic Beanstalk Frontend Variables
+frontend_application_name = "umarsatti-nodejs-frontend-app"
+frontend_environment_name = "umarsatti-nodejs-frontend-env"
+frontend_platform         = "64bit Amazon Linux 2023 v6.7.0 running Node.js 24"
 
 # CodeBuild Variables
 codebuild_project_name = "CodeBuild-EB-Nodejs-Project"

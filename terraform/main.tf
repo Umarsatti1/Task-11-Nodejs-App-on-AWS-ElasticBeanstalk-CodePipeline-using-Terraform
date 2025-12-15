@@ -20,13 +20,14 @@ module "iam" {
     codepipeline_policy       = var.codepipeline_policy
 }
 
-module "beanstalk" {
-    source               = "./modules/beanstalk"
+module "beanstalk-backend" {
+    source               = "./modules/beanstalk-backend"
     eb_service_role      = module.iam.eb_service_role
     ec2_instance_profile = module.iam.ec2_instance_profile
     vpc_id               = module.vpc.vpc_id
     public_subnets       = module.vpc.public_subnets
     private_subnets      = module.vpc.private_subnets
+    db_subnets           = module.vpc.db_subnets  
     ec2_sg_id            = module.vpc.ec2_sg_id
     bucket_name          = var.bucket_name
     application_name     = var.application_name
@@ -36,6 +37,19 @@ module "beanstalk" {
     volume_size          = var.volume_size
     monitoring_interval  = var.monitoring_interval
     alert_email          = var.alert_email
+}
+
+module "beanstalk-frontend" {
+    source                    = "./modules/beanstalk-frontend"
+    vpc_id                    = module.vpc.vpc_id
+    public_subnets            = module.vpc.public_subnets
+    eb_service_role           = module.iam.eb_service_role
+    ec2_instance_profile      = module.iam.ec2_instance_profile
+    frontend_application_name = var.frontend_application_name
+    frontend_environment_name = var.frontend_environment_name
+    frontend_platform         = var.frontend_platform
+    backend_api_url           = module.beanstalk-backend.backend_api_url
+    depends_on                = [module.beanstalk-backend.eb_environment]
 }
 
 module "codebuild" {
@@ -55,8 +69,10 @@ module "codepipeline" {
     codebuild_project_arn     = module.codebuild.codebuild_project_arn
     codebuild_project_name    = module.codebuild.codebuild_project_name
     codepipeline_service_role = module.iam.codepipeline_service_role
-    eb_application_name       = module.beanstalk.eb_application_name
-    eb_environment_name       = module.beanstalk.eb_environment_name
+    backend_application_name  = module.beanstalk-backend.eb_application_name
+    backend_environment_name  = module.beanstalk-backend.eb_environment_name
+    frontend_application_name = module.beanstalk-frontend.eb_application_name
+    frontend_environment_name = module.beanstalk-frontend.eb_environment_name
     pipeline_bucket_name      = var.pipeline_bucket_name
     github_connection_arn     = var.github_connection_arn
     pipeline_name             = var.pipeline_name

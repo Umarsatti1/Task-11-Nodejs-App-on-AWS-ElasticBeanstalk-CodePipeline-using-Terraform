@@ -30,7 +30,6 @@ resource "aws_codepipeline" "pipeline" {
   # Source Stage
   stage {
     name = "Source"
-
     action {
       name             = "Source"
       category         = "Source"
@@ -52,14 +51,12 @@ resource "aws_codepipeline" "pipeline" {
   # Build Stage
   stage {
     name = "Build"
-
     action {
       name             = "Build"
       category         = "Build"
       owner            = "AWS"
       provider         = "CodeBuild"
       version          = "1"
-
       input_artifacts  = ["SourceArtifact"]
       output_artifacts = ["BuildArtifact"]
 
@@ -69,12 +66,11 @@ resource "aws_codepipeline" "pipeline" {
     }
   }
 
-  # Deploy Stage (Elastic Beanstalk)
+  # Deploy Backend Stage
   stage {
-    name = "Deploy"
-
+    name = "DeployBackend"
     action {
-      name            = "DeployToElasticBeanstalk"
+      name            = "DeployBackend"
       category        = "Deploy"
       owner           = "AWS"
       provider        = "ElasticBeanstalk"
@@ -82,8 +78,30 @@ resource "aws_codepipeline" "pipeline" {
       input_artifacts = ["BuildArtifact"]
 
       configuration = {
-        ApplicationName = var.eb_application_name
-        EnvironmentName = var.eb_environment_name
+        ApplicationName = var.backend_application_name
+        EnvironmentName = var.backend_environment_name
+        # Optional: specify S3 artifact path if needed
+        # VersionLabel     = "v1"
+      }
+    }
+  }
+
+  # Deploy Frontend Stage
+  stage {
+    name = "DeployFrontend"
+    action {
+      name            = "DeployFrontend"
+      category        = "Deploy"
+      owner           = "AWS"
+      provider        = "ElasticBeanstalk"
+      version         = "1"
+      input_artifacts = ["BuildArtifact"]
+
+      configuration = {
+        ApplicationName = var.frontend_application_name
+        EnvironmentName = var.frontend_environment_name
+        # Optional: specify S3 artifact path if needed
+        # VersionLabel     = "v1"
       }
     }
   }

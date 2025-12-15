@@ -11,11 +11,19 @@ variable "codepipeline_service_role" {
     type = string
 }
 
-variable "eb_application_name" {
+variable "backend_application_name" {
     type = string
 }
 
-variable "eb_environment_name" {
+variable "backend_environment_name" {
+    type = string
+}
+
+variable "frontend_application_name" {
+    type = string
+}
+
+variable "frontend_environment_name" {
     type = string
 }
 

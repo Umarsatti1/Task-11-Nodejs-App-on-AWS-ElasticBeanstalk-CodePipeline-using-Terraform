@@ -24,6 +24,16 @@ locals {
         Private-Subnet-A = "Public-Subnet-A"
         Private-Subnet-B = "Public-Subnet-B"
     }
+    db_subnets = {
+      DB-Subnet-A = {
+        cidr = "172.20.30.0/24"
+        az   = "us-west-1a"
+      }
+      DB-Subnet-B = {
+        cidr = "172.20.35.0/24"
+        az   = "us-west-1b"
+      }
+    }
 }
 
 # VPC CIDR
@@ -53,6 +63,18 @@ resource "aws_subnet" "public_subnet" {
 # Private Subnets
 resource "aws_subnet" "private_subnet" {
     for_each          = local.private_subnets
+    vpc_id            = aws_vpc.vpc.id
+    availability_zone = each.value.az
+    cidr_block        = each.value.cidr
+
+    tags = {
+        Name = each.key
+    }
+}
+
+# DB Subnets
+resource "aws_subnet" "db_subnet" {
+    for_each          = local.db_subnets
     vpc_id            = aws_vpc.vpc.id
     availability_zone = each.value.az
     cidr_block        = each.value.cidr
@@ -117,6 +139,16 @@ resource "aws_route_table" "private_rt" {
   }
 }
 
+# Database Route Tables
+resource "aws_route_table" "db_rt" {
+  for_each = aws_subnet.db_subnet
+  vpc_id   = aws_vpc.vpc.id
+
+  tags = {
+    Name = "${each.key}-RT"
+  }
+}
+
 # Public Route Table Association
 resource "aws_route_table_association" "public_rta" {
   for_each       = aws_subnet.public_subnet
@@ -137,6 +169,13 @@ resource "aws_route" "private_nat_route" {
   destination_cidr_block = var.public_route
   route_table_id         = aws_route_table.private_rt[each.key].id
   nat_gateway_id         = aws_nat_gateway.nat[local.private_to_nat[each.key]].id
+}
+
+# Database Route Table Association
+resource "aws_route_table_association" "db_rt_assoc" {
+  for_each       = aws_subnet.db_subnet
+  subnet_id      = each.value.id
+  route_table_id = aws_route_table.db_rt[each.key].id
 }
 
 # ALB Security group
@@ -164,7 +203,7 @@ resource "aws_security_group" "alb_sg" {
   }
 }
 
-# ECS Security group
+# EC2 Security group
 resource "aws_security_group" "ec2_sg" {
   name        = "EC2-SG"
   description = "Allows Custom TCP traffic on port 3000 (for Nodejs application) from ALB-SG"
@@ -186,5 +225,30 @@ resource "aws_security_group" "ec2_sg" {
 
   tags = {
     Name = "EC2-SG"
+  }
+}
+
+# RDS Security group
+resource "aws_security_group" "rds_sg" {
+  name        = "RDS-SG"
+  description = "Allows MySQL/Aurora traffic on port 3306 from EC2-SG"
+  vpc_id      = aws_vpc.vpc.id
+
+  ingress {
+    from_port       = 3306
+    to_port         = 3306
+    protocol        = "tcp"
+    security_groups = [aws_security_group.ec2_sg.id]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = [var.public_route]
+  }
+
+  tags = {
+    Name = "RDS-SG"
   }
 }

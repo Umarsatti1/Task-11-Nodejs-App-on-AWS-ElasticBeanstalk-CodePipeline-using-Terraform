@@ -13,6 +13,11 @@ output "private_subnets" {
     description = "VPC Private Subnet IDs"
 }
 
+output "db_subnets" {
+    value       = [for subnet in aws_subnet.db_subnet : subnet.id]
+    description = "VPC DB Subnet IDs"
+}
+
 output "alb_sg_id" {
     value       = aws_security_group.alb_sg.id
     description = "ALB Security Group ID"
@@ -20,5 +25,10 @@ output "alb_sg_id" {
 
 output "ec2_sg_id" {
     value       = aws_security_group.ec2_sg.id
-    description = "ECS Service Security Group ID"
+    description = "EC2 Instances Security Group ID"
+}
+
+output "db_sg_id" {
+    value       = aws_security_group.rds_sg.id
+    description = "RDS Security Group ID"
 }

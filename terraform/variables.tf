@@ -52,7 +52,7 @@ variable "codepipeline_policy" {
     type = string
 }
 
-# Elastic Beanstalk Variables
+# Elastic Beanstalk Backend Variables
 variable "bucket_name" {
     type = string
 }
@@ -82,6 +82,19 @@ variable "monitoring_interval" {
 }
 
 variable "alert_email" {
+    type = string
+}
+
+# Elastic Beanstalk Frontend Variables
+variable "frontend_application_name" {
+    type = string
+}
+
+variable "frontend_environment_name" {
+    type = string
+}
+
+variable "frontend_platform" {
     type = string
 }
 

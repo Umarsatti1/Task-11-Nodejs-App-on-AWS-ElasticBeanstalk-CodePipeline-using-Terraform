@@ -91,12 +91,12 @@
             ],
             "Effect": "Allow",
             "Resource": [
-                "arn:aws:elasticbeanstalk:us-west-1:504649076991:applicationversion/umarsatti-nodejs-application/*"
+                "arn:aws:elasticbeanstalk:us-west-1:504649076991:applicationversion/*"
             ],
             "Condition": {
                 "StringEquals": {
                     "elasticbeanstalk:InApplication": [
-                        "arn:aws:elasticbeanstalk:us-west-1:504649076991:application/umarsatti-nodejs-application"
+                        "arn:aws:elasticbeanstalk:us-west-1:504649076991:application/*"
                     ]
                 }
             }
