@@ -1,123 +1,87 @@
 // cartModel.js
-
 const pool = require("../database/connection");
 
-exports.getShoppingCart = (userId) => {
-    return new Promise((resolve, reject) => {
-        pool.query(
+exports.getShoppingCart = async (userId) => {
+    try {
+        const [rows] = await pool.query(
             "SELECT S.quantity, P.name, P.price, P.productId FROM shopingCart S INNER JOIN product P ON S.productId = P.productId WHERE S.userId = ?",
-            [userId],
-            (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            }
+            [userId]
         );
-    });
+        return rows;
+    } catch (err) {
+        console.error("getShoppingCart error:", err.message);
+        throw err;
+    }
 };
 
-exports.addToCart = (customerId, productId, quantity, isPresent) => {
-    return new Promise((resolve, reject) => {
+exports.addToCart = async (customerId, productId, quantity, isPresent) => {
+    try {
         if (isPresent) {
-            pool.query(
+            const [result] = await pool.query(
                 "UPDATE shopingCart SET quantity = quantity + ? WHERE productId = ? AND userId = ?",
-                [quantity, productId, customerId],
-                (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                }
+                [quantity, productId, customerId]
             );
+            return result;
         } else {
-            pool.query(
+            const [result] = await pool.query(
                 "INSERT INTO shopingCart (userId, productId, quantity) VALUES (?, ?, ?)",
-                [customerId, productId, quantity],
-                (err, result) => {
-                    if (err) {
-                        reject(err);
-                    } else {
-                        resolve(result);
-                    }
-                }
+                [customerId, productId, quantity]
             );
+            return result;
         }
-    });
+    } catch (err) {
+        console.error("addToCart error:", err.message);
+        throw err;
+    }
 };
 
-exports.removeFromCart = (productId, userId) => {
-    return new Promise((resolve, reject) => {
-        pool.query(
+exports.removeFromCart = async (productId, userId) => {
+    try {
+        const [result] = await pool.query(
             "DELETE FROM shopingCart WHERE productId = ? AND userId = ?",
-            [productId, userId],
-            (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            }
+            [productId, userId]
         );
-    });
+        return result;
+    } catch (err) {
+        console.error("removeFromCart error:", err.message);
+        throw err;
+    }
 };
 
-exports.buy = (customerId, address) => {
-    return new Promise((resolve, reject) => {
+exports.buy = async (customerId, address) => {
+    try {
         // Create order
-        pool.query(
+        const [orderResult] = await pool.query(
             "INSERT INTO orders (userId, address) VALUES (?, ?);",
-            [customerId, address],
-            (err, orderResult) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    // Move items from shopping cart to products in order
-                    pool.query(
-                        "INSERT INTO productsInOrder (orderId, productId, quantity, totalPrice) " +
-                        "SELECT (SELECT max(orderId) FROM orders WHERE userId = ?), S.productId, S.quantity, P.price * S.quantity " +
-                        "FROM shopingCart S INNER JOIN product P ON S.productId = P.productId " +
-                        "WHERE S.userId = ?;",
-                        [customerId, customerId],
-                        (err, productsResult) => {
-                            if (err) {
-                                reject(err);
-                            } else {
-                                // Update total price in order table
-                                pool.query(
-                                    "UPDATE orders O " +
-                                    "SET totalPrice = (SELECT SUM(P.totalPrice) " +
-                                    "FROM productsInOrder P " +
-                                    "WHERE O.orderId = P.orderId " +
-                                    "GROUP BY O.orderId) " +
-                                    "WHERE userId = ? AND totalPrice IS NULL;",
-                                    customerId,
-                                    (err, totalPriceResult) => {
-                                        if (err) {
-                                            reject(err);
-                                        } else {
-                                            // Clear shopping cart
-                                            pool.query(
-                                                "DELETE FROM shopingCart WHERE userId = ?;",
-                                                customerId,
-                                                (err, clearCartResult) => {
-                                                    if (err) {
-                                                        reject(err);
-                                                    } else {
-                                                        resolve({ orderResult, productsResult, totalPriceResult, clearCartResult });
-                                                    }
-                                                }
-                                            );
-                                        }
-                                    }
-                                );
-                            }
-                        }
-                    );
-                }
-            }
+            [customerId, address]
         );
-    });
+
+        const [productsResult] = await pool.query(
+            "INSERT INTO productsInOrder (orderId, productId, quantity, totalPrice) " +
+            "SELECT (SELECT max(orderId) FROM orders WHERE userId = ?), S.productId, S.quantity, P.price * S.quantity " +
+            "FROM shopingCart S INNER JOIN product P ON S.productId = P.productId " +
+            "WHERE S.userId = ?;",
+            [customerId, customerId]
+        );
+
+        const [totalPriceResult] = await pool.query(
+            "UPDATE orders O " +
+            "SET totalPrice = (SELECT SUM(P.totalPrice) " +
+            "FROM productsInOrder P " +
+            "WHERE O.orderId = P.orderId " +
+            "GROUP BY O.orderId) " +
+            "WHERE userId = ? AND totalPrice IS NULL;",
+            [customerId]
+        );
+
+        const [clearCartResult] = await pool.query(
+            "DELETE FROM shopingCart WHERE userId = ?;",
+            [customerId]
+        );
+
+        return { orderResult, productsResult, totalPriceResult, clearCartResult };
+    } catch (err) {
+        console.error("buy error:", err.message);
+        throw err;
+    }
 };
