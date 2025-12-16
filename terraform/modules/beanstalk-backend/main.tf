@@ -89,6 +89,12 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     value     = true
   }
 
+  setting {
+    namespace = "aws:elbv2:loadbalancer"
+    name      = "IdleTimeout"
+    value     = "600"
+  }
+
 # Step 4: Configure instance traffic and scaling
 
   # Part 1: Instances
@@ -262,6 +268,17 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "DB_NAME"
     value     = "ecommerce"
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "JWT_SECRET_KEY_ACCESS_TOKEN"
+    value     = "272d68940619f58da65205c81da4fad16ae4629a2b32929c071fa554ea4da7390359e8ce3c7911de2e816b728ca609b67bec800932227ac5c7f6bd7cc558f0ae" 
+  }
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "JWT_SECRET_KEY_REFRESH_TOKEN"
+    value     = "e6887d5ad961263d3f65c5ad66fbaf86e18fb29bb3e53d0fdec2446a0d9313376ac648625e66adb4f4d71800bdb82473854fa0852ed3ce4b9d696dbbd86bfa55" 
   }
 }
 
