@@ -9,7 +9,7 @@ exports.register = async (req, res) => {
     console.log("User registered successfully");
     res.status(201).send(result);
   } catch (err) {
-    console.error("Register error:", err.message);
+    console.error("Register error:", err);
     res.status(500).send({ error: err.message });
   }
 };
@@ -22,7 +22,7 @@ exports.login = async (req, res) => {
     console.log("User logged in successfully");
     res.status(200).send(result);
   } catch (err) {
-    console.error("Login error:", err.message);
+    console.error("Login error:", err);
     res.status(500).send({ error: err.message });
   }
 };

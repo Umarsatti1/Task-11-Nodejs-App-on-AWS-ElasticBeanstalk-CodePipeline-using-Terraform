@@ -16,7 +16,7 @@ function Register(props) {
       const newUser = {
         email: email,
         password: pass,
-        isAdmin: isAdmin,
+        isAdmin: parseInt(isAdmin, 10),
         fname: fname,
         lname: lname,
       };
@@ -30,7 +30,10 @@ function Register(props) {
             props.navigateToLoginPage();
           }
         })
-        .catch((err) => console.log("Sorry unable to add new user"));
+        .catch((err) => {
+          console.log("Registration failed:", err.response?.data);
+          setError(err.response?.data?.error || "Sorry, unable to add new user");
+        });
     }
   };
 
