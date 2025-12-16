@@ -1,5 +1,5 @@
 // database/connection.js
-const mysql = require("mysql2/promise");
+const mysql = require("mysql2");
 
 const isLocal = process.env.USE_LOCALHOST === "true";
 
