@@ -16,17 +16,6 @@ phases:
       - echo Copying React build to server...
       - rm -rf E-Commerce-react-node-mysql/server/build
       - cp -r E-Commerce-react-node-mysql/client/build E-Commerce-react-node-mysql/server/build
-      
-      - echo Setting up Nginx proxy configuration...
-      - mkdir -p E-Commerce-react-node-mysql/server/.platform/nginx/conf.d
-      
-      - |
-        cat > E-Commerce-react-node-mysql/server/.platform/nginx/conf.d/proxy.conf << EOF
-        proxy_connect_timeout 300;
-        proxy_send_timeout 300;
-        proxy_read_timeout 300;
-        send_timeout 300;
-        EOF
 
       - echo Copying .ebextensions to server root...
       - cp -r .ebextensions E-Commerce-react-node-mysql/server/
