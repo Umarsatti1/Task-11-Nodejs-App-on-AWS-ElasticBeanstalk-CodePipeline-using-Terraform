@@ -290,12 +290,6 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   }
 
   setting {
-  namespace = "aws:elasticbeanstalk:application:environment"
-  name      = "RDS_HOSTNAME"
-  value     = aws_elastic_beanstalk_environment.eb_environment.endpoint_url
-  }
-
-  setting {
     namespace = "aws:elasticbeanstalk:application:environment"
     name      = "RDS_PORT"
     value     = "3306"
