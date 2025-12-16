@@ -144,7 +144,7 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
   setting {
     namespace = "aws:ec2:instances"
     name      = "InstanceTypes"
-    value     = "t3.micro,t3.small"
+    value     = "t3.medium,t3.large"
   }
 
   setting {
