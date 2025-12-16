@@ -24,6 +24,6 @@ app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "build", "index.html"));
 });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 8080;
 const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 server.timeout = 300000;
