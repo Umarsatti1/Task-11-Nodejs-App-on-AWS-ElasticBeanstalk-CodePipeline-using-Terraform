@@ -59,3 +59,7 @@ variable "db_subnets" {
 variable "ec2_sg_id" {
     type = string
 }
+
+variable "db_address" {
+    type = string
+}

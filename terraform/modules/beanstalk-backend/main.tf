@@ -70,61 +70,6 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
     value     = join(",", var.public_subnets)
   }
 
-  # Database
-  setting {
-    namespace = "aws:ec2:vpc"
-    name      = "DBSubnets"
-    value     = join(",", var.db_subnets)
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBEngine"
-    value     = "mysql"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBEngineVersion"
-    value     = "8.0.43"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBInstanceClass"
-    value     = "db.t3.micro"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBAllocatedStorage"
-    value     = "10"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBUser"
-    value     = "umarsatti"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBPassword"
-    value     = "P@ssw0rd"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "MultiAZDatabase"
-    value     = "false"
-  }
-
-  setting {
-    namespace = "aws:rds:dbinstance"
-    name      = "DBDeletionPolicy"
-    value     = "Delete"
-  }
-
   # Load Balancer
   setting {
     namespace = "aws:elasticbeanstalk:environment"
@@ -291,26 +236,32 @@ resource "aws_elastic_beanstalk_environment" "eb_environment" {
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RDS_PORT"
+    name      = "DB_HOST"
+    value     = var.db_address
+  }
+
+  setting {
+    namespace = "aws:elasticbeanstalk:application:environment"
+    name      = "DB_PORT"
     value     = "3306"
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RDS_USERNAME"
+    name      = "DB_USER"
     value     = "umarsatti"
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RDS_PASSWORD"
+    name      = "DB_PASSWORD"
     value     = "umarsatti"
   }
 
   setting {
     namespace = "aws:elasticbeanstalk:application:environment"
-    name      = "RDS_DB_NAME"
-    value     = "beanstalkdb"
+    name      = "DB_NAME"
+    value     = "ecommerce"
   }
 }
 

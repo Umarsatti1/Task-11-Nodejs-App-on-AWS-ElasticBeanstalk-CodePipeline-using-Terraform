@@ -1,39 +1,48 @@
 // database/connection.js
-const mysql2 = require("mysql2");
-require('dotenv').config(); // Load environment variables from .env file
+const mysql = require("mysql2");
 
-let connectionParams;
+// Detect environment
+const isLocal = process.env.USE_LOCALHOST === "true";
 
-// Use flag to toggle between localhost and server configurations
-const useLocalhost = process.env.USE_LOCALHOST === 'true';
-
-if (useLocalhost) {
-    console.log("Inside local")
-    connectionParams = {
-        user: "root",
-        host: "localhost",
-        password: "P@ssw0rd",
-        database: "e_commerce",
-    };
+// Only load dotenv for LOCAL development
+if (isLocal) {
+  require("dotenv").config();
+  console.log("Running in LOCAL mode");
 } else {
-
-    console.log(`Attempting connection to Host: ${process.env.RDS_HOSTNAME}, User: ${process.env.RDS_USERNAME}`);
-
-    connectionParams = {
-        host: process.env.RDS_HOSTNAME,
-        user: process.env.RDS_USERNAME,
-        password: process.env.RDS_PASSWORD,
-        database: process.env.RDS_DB_NAME,
-    };
+  console.log("Running in PRODUCTION mode (Elastic Beanstalk)");
 }
 
-const pool = mysql2.createConnection(connectionParams);
+// Build connection config
+const connectionConfig = isLocal
+  ? {
+      host: "localhost",
+      user: "root",
+      password: process.env.DB_PASSWORD,
+      database: "e_commerce",
+      port: 3306,
+    }
+  : {
+      host: process.env.DB_HOST,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASSWORD,
+      database: process.env.DB_NAME,
+      port: process.env.DB_PORT || 3306,
+      waitForConnections: true,
+      connectionLimit: 10,
+      queueLimit: 0,
+    };
 
-pool.connect((err) => {
-    if (err) console.log(err.message);
-    else console.log("DB Connection Done")
+// Create connection pool
+const pool = mysql.createPool(connectionConfig);
+
+// Test connection
+pool.getConnection((err, connection) => {
+  if (err) {
+    console.error("MySQL connection failed:", err.message);
+  } else {
+    console.log("MySQL connected successfully");
+    connection.release();
+  }
 });
 
-// Export the pool
-module.exports = pool;
-
+module.exports = pool.promise();

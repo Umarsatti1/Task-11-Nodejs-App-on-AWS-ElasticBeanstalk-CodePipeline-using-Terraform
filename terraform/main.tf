@@ -29,6 +29,7 @@ module "beanstalk-backend" {
     private_subnets      = module.vpc.private_subnets
     db_subnets           = module.vpc.db_subnets  
     ec2_sg_id            = module.vpc.ec2_sg_id
+    db_address           = module.rds.db_address
     bucket_name          = var.bucket_name
     application_name     = var.application_name
     environment_name     = var.environment_name
@@ -37,6 +38,12 @@ module "beanstalk-backend" {
     volume_size          = var.volume_size
     monitoring_interval  = var.monitoring_interval
     alert_email          = var.alert_email
+}
+
+module "rds" {
+    source     = "./modules/rds"
+    db_subnets = module.vpc.db_subnets
+    db_sg_id   = module.vpc.db_sg_id
 }
 
 module "codebuild" {
