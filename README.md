@@ -33,7 +33,7 @@ Before deploying to AWS, the three-tier application is tested locally to ensure 
 ### 1.1 Files Overview
 
 **Backend (Node.js / Express)**
-- **app.js** – Main server file; configures middleware, API routes, authentication, and serves the React build.
+- **app.js** – Main server file. Configures middleware, API routes, authentication, and serves the React build.
 - **package.json** – Project metadata, dependencies, and scripts.
 - **database/connection.js** – MySQL connection using mysql2 with pooling and promise support.
 
